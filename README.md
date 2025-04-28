@@ -54,7 +54,9 @@ It helps you quickly catch up on conversations without reading line-by-line, ens
    pip install -r requirements.txt
    ```
 
-4. Start the FastAPI server:
+6. create a .env that includes your hugging face token ```"HF_TOKEN = XXX"```
+
+5. Start the FastAPI server:
 
    ```bash
    uvicorn app.main:app --reload --port 8000
@@ -100,7 +102,7 @@ It helps you quickly catch up on conversations without reading line-by-line, ens
 
 Example placeholder:
 
-![Console Example](/screenshots/example-ui.png)
+![Console Example](frontend/public/screenshot/screenshot/example-ui.png)
 ---
 
 ## Future Improvements
