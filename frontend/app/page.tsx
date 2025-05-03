@@ -8,6 +8,7 @@ import { sendTextToBackend } from "@/utils/api";
 export default function Home() {
   const [text, setText] = useState("");
   const [summary, setSummary] = useState("");
+  const [keyInfo, setKeyInfo] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleFileUpload = (fileContent: string) => {
@@ -19,6 +20,7 @@ export default function Home() {
       setLoading(true);
       const result = await sendTextToBackend(text);
       setSummary(result.summary);
+      setKeyInfo(result.key_info);
     } catch (error) {
       alert("Failed to summarize.");
     } finally {
@@ -37,7 +39,7 @@ export default function Home() {
       >
         {loading ? "Summarizing..." : "Summarize"}
       </button>
-      <Console text={text} summary={summary} />
+      <Console text={text} summary={summary} keyInfo={keyInfo} />
     </main>
   );
 }

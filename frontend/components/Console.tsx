@@ -2,7 +2,8 @@
 
 import Papa from "papaparse";
 
-export function Console({ text, summary }: { text: string; summary: string }) {
+export function Console({ text, summary, keyInfo }: { text: string; summary: string;
+  keyInfo: string}) {
   let parsedData: string[][] = [];
 
   if (text.trim().startsWith("{") || text.trim().startsWith("[")) {
@@ -55,6 +56,10 @@ export function Console({ text, summary }: { text: string; summary: string }) {
       <div>
         <h2 className="text-xl font-semibold mb-2">Summary</h2>
         <textarea value={summary} readOnly className="w-full h-40 border p-2 mt-2" />
+      </div>
+      <div>
+        <h2 className="text-xl font-semibold mb-2">Key Information</h2>
+        <textarea value={keyInfo} readOnly className="w-full h-40 border p-2 mt-2" />
       </div>
     </div>
   );

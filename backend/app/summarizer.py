@@ -35,3 +35,27 @@ def summarize_conversation(conversation_text: str) -> str:
         return summary[0]['summary_text'] if isinstance(summary, list) else summary
     else:
         return "Summarization failed. API error."
+    
+
+def extract_key_info(conversation_text: str) -> str:
+    # Prompt for key information extraction
+    extraction_prompt = (
+        "You are a specialized information extractor focused on notifications.\n"
+        "From the following conversation, identify all notice-type items (e.g., meeting times, dates, deadlines, venue announcements, appointments) "
+        "and any subsequent updates or changes. Make sure each important message is separated by a new line.\n"
+        "Provide each as a bullet point with the final agreed details.\n\n"
+        "Conversation:\n"
+    )
+    payload = extraction_prompt + conversation_text
+
+    response = requests.post(
+        API_URL,
+        headers=headers,
+        json={"inputs": payload}
+    )
+
+    if response.status_code == 200:
+        result = response.json()
+        return result[0]['summary_text'] if isinstance(result, list) else result
+    else:
+        return "Key info extraction failed. API error."
