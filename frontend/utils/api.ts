@@ -103,3 +103,21 @@ export async function sendTextToBackend(text: string) {
     return await sendToLegacyAPI(text);
   }
 }
+
+// Draft response API function
+export async function sendTextForDraftResponse(text: string, asUser?: string) {
+  const response = await fetch("http://localhost:8000/draft_response", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      text,
+      as_user: asUser 
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to draft response");
+  }
+
+  return await response.json();
+}

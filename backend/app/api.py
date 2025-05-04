@@ -11,6 +11,7 @@ from app.database import get_db
 from app.services.summarizer import summarizer_service
 from app.repositories.message_repository import message_repository
 from app.services.context import context_service
+from app.services.response_drafter import response_drafter_service
 
 router = APIRouter()
 
@@ -18,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class TextRequest(BaseModel):
     text: str
+    as_user: Optional[str] = None
 
 class MessageRequest(BaseModel):
     author: str
@@ -36,6 +38,10 @@ class ContextResponse(BaseModel):
 
 class SummaryResponse(BaseModel):
     summary: str
+    processing_time: float
+
+class DraftResponse(BaseModel):
+    draft: str
     processing_time: float
 
 @router.post("/summarize")
@@ -165,5 +171,24 @@ async def get_conversation_summary(
     
     return {
         "summary": summary,
+        "processing_time": processing_time
+    }
+
+@router.post("/draft_response")
+async def draft_response(request: Request):
+    """Legacy endpoint for drafting responses directly."""
+    data = await request.json()
+    text = data.get("text", "")
+    as_user = data.get("as_user", None)
+
+    if not text:
+        return {"error": "No text provided."}
+
+    start_time = time.time()
+    draft = response_drafter_service.draft_response(text, as_user)
+    processing_time = time.time() - start_time
+    
+    return {
+        "draft": draft,
         "processing_time": processing_time
     }
