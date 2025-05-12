@@ -28,6 +28,51 @@ class SummarizerService:
     def __init__(self, cache_ttl=3600):
         self.cache_ttl = cache_ttl
 
+
+    def extract_key_info(self, conversation_text: str) -> str:
+        key_info = []
+        
+        # Example: Extracting meetings and deadlines (this is an initial pass)
+        meeting_info = re.findall(r"(meeting|call|appointment) on (\d{4}-\d{2}-\d{2}) at (\d{2}:\d{2})", conversation_text)
+        for match in meeting_info:
+            key_info.append(f"Meeting scheduled on {match[1]} at {match[2]}")
+
+        deadline_info = re.findall(r"deadline\s+by\s+(\d{4}-\d{2}-\d{2})", conversation_text)
+        for deadline in deadline_info:
+            key_info.append(f"Deadline by {deadline[0]}")
+
+    def refine_key_info_with_gpt(self, conversation_text: str, key_info: str) -> str:
+        system_prompt_key_info = (
+            f"You are an expert in parsing important information from conversations.\n"
+            f"Here is a list of potential key information extracted from a conversation:\n"
+            f"{key_info}\n\n"
+            f"Please check the validity of the extracted key information and adjust it if necessary. If something is incorrect or outdated, fix it. Your task is to make sure the extracted key information is accurate.\n"
+        )
+
+        try:
+            messages = [
+                {"role": "system", "content": system_prompt_key_info},
+                {"role": "user", "content": conversation_text[:6000]}  # limit input size to fit model constraints
+            ]
+
+            response = openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                temperature=0.3
+            )
+
+            refined_key_info = response.choices[0].message.content.strip()
+            return refined_key_info
+
+        except OpenAIError as e:
+            logger.exception("OpenAI API error")
+            raise RuntimeError(f"Key info refinement failed due to OpenAI error: {str(e)}")
+        except Exception as e:
+            logger.exception("Unexpected error during key info refinement")
+            raise RuntimeError(f"Key info refinement failed due to exception: {str(e)}") 
+
+
+
     def summarize_conversation(
         self,
         conversation_text: str,
@@ -35,11 +80,16 @@ class SummarizerService:
     ) -> str:
         start_time = time.time()
 
+        # Speaker stats
         speakers = re.findall(r"^(.+?):", conversation_text, re.MULTILINE)
         speaker_counts = Counter(speakers)
         num_users = len(speaker_counts)
         top_users = ", ".join([f"{user} ({count} msgs)" for user, count in speaker_counts.most_common(5)])
+        
+        key_info = self.extract_key_info(conversation_text)
+        refined_key_info = self.refine_key_info_with_gpt(conversation_text, key_info)
 
+        # System prompt
         system_prompt = (
             f"You are a professional conversation summarizer.\n"
             f"There are {num_users} participants, mainly {top_users}.\n"
@@ -73,8 +123,9 @@ class SummarizerService:
             )
 
             summary = response.choices[0].message.content.strip()
+            combined_summary = f"Key Information:\n{refined_key_info}\n\nSummary:\n{summary}"
             logger.info(f"OpenAI call took {time.time() - start_time:.2f}s")
-            return summary
+            return combined_summary
 
         except OpenAIError as e:
             logger.exception("OpenAI API error")
@@ -147,6 +198,7 @@ class SummarizerService:
 
         logger.info(f"Summary generation took {time.time() - start_time:.2f}s total")
         return summary_text
+
 
 # Global summarizer instance
 summarizer_service = SummarizerService()
