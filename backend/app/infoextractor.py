@@ -23,29 +23,18 @@ class InfoExtractorService:
 
     def extract_key_info(self, text: str) -> str:
         events = []
-
-        # Split the text into blocks and only keep blocks that look like announcements
         for block in text.split("\n\n"):
             line = block.strip()
             if not line:
                 continue
-
-            # Only consider lines containing keywords
             if not re.search(r"\b(Lecture|class|Reminder|starts|TODAY|TIME CHANGE)\b", line, re.IGNORECASE):
                 continue
-
-            # Clean out markdown and URLs
             clean = re.sub(r"\*\*|\[.*?\]\(.*?\)", "", line)
             clean = re.sub(r"http\S+", "", clean).strip()
-
-            # Parse a date in the line
             dt = parse_date(clean, settings={"PREFER_DATES_FROM": "future"})
-            # Fallback: look for YYYY-MM-DD explicitly
             m_date = re.search(r"(\d{4}-\d{2}-\d{2})", clean)
             if m_date:
                 dt = dt or parse_date(m_date.group(1))
-
-            # Parse a time, e.g. “4:00PM” or “4 pm”
             m_time = re.search(r"(\d{1,2}(?::\d{2})?\s*(?:AM|PM))", clean, re.IGNORECASE)
             if dt and m_time:
                 timestr = m_time.group(1).upper().replace(" ", "")
@@ -97,7 +86,7 @@ class InfoExtractorService:
                 "BEGIN:VEVENT",
                 f"SUMMARY:{desc}",
                 f"DTSTART:{stamp}",
-                f"DTEND:{stamp}",   # you can adjust to +1h or add duration rule
+                f"DTEND:{stamp}",
                 "END:VEVENT"
             ]
 

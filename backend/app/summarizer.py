@@ -69,7 +69,7 @@ class SummarizerService:
                 {"role": "user", "content": conversation_text[:6000]}
             ]
 
-            response = openai.ChatCompletion.create(
+            response = openai.chat.completionsion.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
                 temperature=0.3
