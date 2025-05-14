@@ -6,7 +6,8 @@ import logging
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAIError, OpenAI
-import time
+from dateparser import parse as parse_date
+
 
 load_dotenv()
 
@@ -21,46 +22,50 @@ class InfoExtractorService:
         self.cache_ttl = cache_ttl
 
     def extract_key_info(self, text: str) -> str:
-        key_info = []
-        for kind in ("meeting","call","appointment","class"):
-            for d,t in re.findall(
-                rf"{kind} on (\d{{4}}-\d{{2}}-\d{{2}}) at (\d{{1,2}}:\d{{2}})",
-                text, flags=re.IGNORECASE):
-                key_info.append(f"{kind.capitalize()} on {d} at {t}")
-        for date_str, time_str, ampm in re.findall(
-            r"([A-Za-z]+ \d{1,2}(?:st|nd|rd|th)?(?:, \d{4})?)\s+at\s+(\d{1,2}:\d{2})\s*(AM|PM)",
-            text):
-            dt = dateparser.parse(f"{date_str} {time_str}{ampm}")
-            if dt:
-                key_info.append(f"Event on {dt.strftime('%Y-%m-%d')} at {dt.strftime('%H:%M')}")
-        for start, end, ampm in re.findall(
-            r"(\d{1,2}:\d{2})\s*(AM|PM)\s*-\s*(\d{1,2}:\d{2})\s*(AM|PM)\s*(?:PST|EST|CET)?",
-            text):
-            s = dateparser.parse(f"{start}{ampm}")
-            e = dateparser.parse(f"{end}{ampm}")
-            if s and e:
-                key_info.append(f"Time slot {s.strftime('%H:%M')}–{e.strftime('%H:%M')}")
-        for start, end in re.findall(
-            r"starting\s+([A-Za-z0-9 ,thndsr]+?)\s+through\s+([A-Za-z0-9 ,thndsr]+?)(?:\.|\s|$)",
-            text, flags=re.IGNORECASE):
-            sd = dateparser.parse(start)
-            ed = dateparser.parse(end)
-            if sd and ed:
-                key_info.append(f"From {sd.strftime('%Y-%m-%d')} through {ed.strftime('%Y-%m-%d')}")
-        for sentence in re.findall(
-            r"([^.]*\b(class|livestream|starts)\b[^.]*\.)", text, flags=re.IGNORECASE):
-            key_info.append(sentence[0].strip())
+        events = []
 
-        return "\n".join(key_info) if key_info else ""
+        # Split the text into blocks and only keep blocks that look like announcements
+        for block in text.split("\n\n"):
+            line = block.strip()
+            if not line:
+                continue
+
+            # Only consider lines containing keywords
+            if not re.search(r"\b(Lecture|class|Reminder|starts|TODAY|TIME CHANGE)\b", line, re.IGNORECASE):
+                continue
+
+            # Clean out markdown and URLs
+            clean = re.sub(r"\*\*|\[.*?\]\(.*?\)", "", line)
+            clean = re.sub(r"http\S+", "", clean).strip()
+
+            # Parse a date in the line
+            dt = parse_date(clean, settings={"PREFER_DATES_FROM": "future"})
+            # Fallback: look for YYYY-MM-DD explicitly
+            m_date = re.search(r"(\d{4}-\d{2}-\d{2})", clean)
+            if m_date:
+                dt = dt or parse_date(m_date.group(1))
+
+            # Parse a time, e.g. “4:00PM” or “4 pm”
+            m_time = re.search(r"(\d{1,2}(?::\d{2})?\s*(?:AM|PM))", clean, re.IGNORECASE)
+            if dt and m_time:
+                timestr = m_time.group(1).upper().replace(" ", "")
+                events.append(f"{clean} — {dt.strftime('%Y-%m-%d')} at {timestr}")
+
+        return "\n".join(events)
 
     def refine_key_info_with_gpt(self, conversation_text: str, key_info: str) -> str:
         if not key_info:
             return ""
         system_prompt = (
-            "You are an expert in extracting and validating notification-style information.\n"
-            "Below is a list of candidate key items extracted via regex.\n"
-            f"{key_info}\n\n"
-            "Please verify, correct, and clarify each item. Output final bullet points."
+            "You are an expert at validating and formatting notification‐style events.\n"
+            "Below are candidate events in the form “Description — YYYY-MM-DD at HH:MMAM/PM”.\n"
+            "Please:\n"
+            "  1. Ensure each is correctly formatted.\n"
+            "  2. Remove any leftover URLs or markdown.\n"
+            "  3. Deduplicate if there are repeats.\n"
+            "Output each event as a bullet point, e.g.:\n"
+            "- Lecture 2 w/ Jason Weston — 2025-02-03 at 4:00PM\n"
+            f"{key_info}"
         )
         try:
             response = openai_client.chat.completions.create(
@@ -75,36 +80,30 @@ class InfoExtractorService:
         except OpenAIError as e:
             logger.exception("OpenAI error refining key info")
             raise RuntimeError(f"Key info refinement failed: {e}")
+        
+    def generate_ics(self, refined: str) -> str:
+        ics_lines = ["BEGIN:VCALENDAR", "VERSION:2.0"]
+        for line in refined.splitlines():
+            m = re.match(
+                r"-\s*(.+)\s+—\s+(\d{4}-\d{2}-\d{2})\s+at\s+(\d{1,2}:\d{2})(AM|PM)",
+                line
+            )
+            if not m:
+                continue
+            desc, date, time_part, ampm = m.groups()
+            dt = parse_date(f"{date} {time_part}{ampm}")
+            stamp = dt.strftime("%Y%m%dT%H%M%S")
+            ics_lines += [
+                "BEGIN:VEVENT",
+                f"SUMMARY:{desc}",
+                f"DTSTART:{stamp}",
+                f"DTEND:{stamp}",   # you can adjust to +1h or add duration rule
+                "END:VEVENT"
+            ]
 
-    def generate_ics(self, key_info: str) -> str:
-        """Generate and save an ICS file for the given key info."""
-        ics = ["BEGIN:VCALENDAR", "VERSION:2.0"]
-        for line in key_info.split("\n"):
-            if "Meeting scheduled on" in line:
-                m = re.search(r"on (\d+-\d+-\d+) at (\d+:\d+)", line)
-                if m:
-                    date, time = m.groups()
-                    dt = date.replace("-", "") + "T" + time.replace(":", "") + "00"
-                    ics += [
-                        "BEGIN:VEVENT",
-                        f"SUMMARY:{line}",
-                        f"DTSTART:{dt}",
-                        f"DTEND:{dt}",
-                        "END:VEVENT"
-                    ]
-            if line.startswith("Deadline by"):
-                d = line.split(" ")[-1]
-                dt = d.replace("-", "") + "T000000"
-                ics += [
-                    "BEGIN:VEVENT",
-                    f"SUMMARY:{line}",
-                    f"DTSTART:{dt}",
-                    f"DTEND:{dt}",
-                    "END:VEVENT"
-                ]
-        ics.append("END:VCALENDAR")
-        content = "\n".join(ics)
-        filename = "keyinfo.ics"
+        ics_lines.append("END:VCALENDAR")
+        content = "\n".join(ics_lines)
+        filename = f"events_{int(time.time())}.ics"
         with open(filename, "w") as f:
             f.write(content)
         return filename
