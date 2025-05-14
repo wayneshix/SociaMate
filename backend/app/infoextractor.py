@@ -6,6 +6,7 @@ import logging
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAIError, OpenAI
+import time
 
 load_dotenv()
 
@@ -103,7 +104,7 @@ class InfoExtractorService:
                 ]
         ics.append("END:VCALENDAR")
         content = "\n".join(ics)
-        filename = f"keyinfo_{int(time.time())}.ics"
+        filename = "keyinfo.ics"
         with open(filename, "w") as f:
             f.write(content)
         return filename
