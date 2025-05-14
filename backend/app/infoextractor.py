@@ -62,7 +62,7 @@ class InfoExtractorService:
             "Please verify, correct, and clarify each item. Output final bullet points."
         )
         try:
-            response = openai_client.ChatCompletion.create(
+            response = openai_client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": system_prompt},
