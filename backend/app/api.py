@@ -6,7 +6,7 @@ import logging
 import time
 from datetime import datetime
 from pydantic import BaseModel, Field
-from app.services.infoextractor import InfoExtractorService
+from app.infoextractor import InfoExtractorService
 from app.database import get_db
 from app.services.summarizer import summarizer_service
 from app.repositories.message_repository import message_repository
@@ -203,7 +203,7 @@ async def get_key_info(
     raw = extractor.extract_key_info(context)
     if not raw:
         return {"key_info": "", "ics_file": ""}
-    refined = extractor.refine_key_info(context, raw)
+    refined = extractor.refine_key_info_with_gpt(context, raw)
     ics = extractor.generate_ics(refined)
 
     return {"key_info": refined, "ics_file": ics}

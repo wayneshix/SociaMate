@@ -1,4 +1,4 @@
-# app/services/infoextractor.py
+# app/infoextractor.py
 import os
 import re
 import time
