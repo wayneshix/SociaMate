@@ -70,7 +70,7 @@ class SummarizerService:
             ]
 
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
+                model="gpt-3.5-turbo",
                 messages=messages,
                 temperature=0.3
             )

@@ -19,27 +19,38 @@ class InfoExtractorService:
     def __init__(self, cache_ttl: int = 3600):
         self.cache_ttl = cache_ttl
 
-    def extract_key_info(self, conversation_text: str) -> str:
+    def extract_key_info(self, text: str) -> str:
         key_info = []
-        # Step 1: simple regex extraction for meetings, deadlines, appointments
-        meeting_info = re.findall(
-            r"(meeting|call|appointment|class) on (\d{4}-\d{2}-\d{2}) at (\d{2}:\d{2})",
-            conversation_text, flags=re.IGNORECASE
-        )
-        for match in meeting_info:
-            key_info.append(f"Meeting scheduled on {match[1]} at {match[2]}")
+        for kind in ("meeting","call","appointment","class"):
+            for d,t in re.findall(
+                rf"{kind} on (\d{{4}}-\d{{2}}-\d{{2}}) at (\d{{1,2}}:\d{{2}})",
+                text, flags=re.IGNORECASE):
+                key_info.append(f"{kind.capitalize()} on {d} at {t}")
+        for date_str, time_str, ampm in re.findall(
+            r"([A-Za-z]+ \d{1,2}(?:st|nd|rd|th)?(?:, \d{4})?)\s+at\s+(\d{1,2}:\d{2})\s*(AM|PM)",
+            text):
+            dt = dateparser.parse(f"{date_str} {time_str}{ampm}")
+            if dt:
+                key_info.append(f"Event on {dt.strftime('%Y-%m-%d')} at {dt.strftime('%H:%M')}")
+        for start, end, ampm in re.findall(
+            r"(\d{1,2}:\d{2})\s*(AM|PM)\s*-\s*(\d{1,2}:\d{2})\s*(AM|PM)\s*(?:PST|EST|CET)?",
+            text):
+            s = dateparser.parse(f"{start}{ampm}")
+            e = dateparser.parse(f"{end}{ampm}")
+            if s and e:
+                key_info.append(f"Time slot {s.strftime('%H:%M')}–{e.strftime('%H:%M')}")
+        for start, end in re.findall(
+            r"starting\s+([A-Za-z0-9 ,thndsr]+?)\s+through\s+([A-Za-z0-9 ,thndsr]+?)(?:\.|\s|$)",
+            text, flags=re.IGNORECASE):
+            sd = dateparser.parse(start)
+            ed = dateparser.parse(end)
+            if sd and ed:
+                key_info.append(f"From {sd.strftime('%Y-%m-%d')} through {ed.strftime('%Y-%m-%d')}")
+        for sentence in re.findall(
+            r"([^.]*\b(class|livestream|starts)\b[^.]*\.)", text, flags=re.IGNORECASE):
+            key_info.append(sentence[0].strip())
 
-        deadline_info = re.findall(
-            r"deadline\s+by\s+(\d{4}-\d{2}-\d{2})",
-            conversation_text, flags=re.IGNORECASE
-        )
-        for dl in deadline_info:
-            key_info.append(f"Deadline by {dl}")
-
-        # If no key info found, skip
-        if not key_info:
-            return ""
-        return "\n".join(key_info)
+        return "\n".join(key_info) if key_info else ""
 
     def refine_key_info_with_gpt(self, conversation_text: str, key_info: str) -> str:
         if not key_info:
