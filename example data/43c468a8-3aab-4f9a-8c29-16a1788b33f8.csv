@@ -1,0 +1,192 @@
+channel_id,Date,user_id,user_name,content
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-01-25,13:13:33",tarande57,tarande57,"**Advanced LLM Agents MOOC starts this Monday!**
+
+Everything you will need for this course (livestream URLs, homework assignments, etc) can be found on our course website: http://llmagents-learning.org/sp25.
+
+We will be hosting a livestream for each of our guest speakers, every Monday 4:00PM - 6:00PM PST starting January 27th through April 28th. The livestreams will be posted on Youtube afterwards.
+
+Our first class is January 27th, 4:00PM PST. The first livestream URL can be found here: https://www.youtube.com/live/g0Dwtf3BH-0. This link, and each additional livestream link will also be posted on the course website in the Syllabus section.
+
+We will release more details about our course completion certificate requirements soon. Stay tuned! There are no deadlines for the first week of lecture.
+
+If you have any questions/feedback/concerns, the best place to communicate directly with course staff is in <#1280370030609170494>. It's also not too late to sign up — [enroll here](https://forms.gle/9u6HdVCWXgws16go9).
+
+Thank you for your interest in taking this course @everyone! Looking forward to class!"
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-02-03,13:34:06",tarande57,tarande57,"**Lecture 2 w/ Jason Weston TODAY at 4pm PST**
+
+Our 2nd lecture will be happening today @4:00pm PST! You can find the livestream here: https://www.youtube.com/live/_MNlLhU33H0. 
+
+Today, our amazing guest speaker Jason Weston will be presenting, ""Learning to Self-Improve & Reason with LLMs.""
+
+We describe some recent methods for LLMs whereby they can self-learn how to perform better at tasks relevant to human users, from reasoning or math tasks to creative tasks. In particular we describe the methods of Iterative DPO (https://arxiv.org/abs/2312.16682), Self-Rewarding LLMs (https://arxiv.org/abs/2401.10020), Iterative Reasoning Preference Optimization (https://arxiv.org/abs/2404.19733),  Thinking LLMs (https://arxiv.org/abs/2410.10630), Meta-Rewarding LLMs (https://arxiv.org/abs/2407.19594), and more! 
+
+Jason Weston is a research scientist at Meta AI, USA and a Visiting Research Professor at NYU. He earned his PhD in machine learning at Royal Holloway, University of London and at AT&T Research in Red Bank, NJ (advisors: Alex Gammerman, Volodya Vovk and Vladimir Vapnik) in 2000. From 2002 to 2003 he was a research scientist at the Max Planck Institute for Biological Cybernetics, Tuebingen, Germany. From 2003 to 2009 he was a research staff member at NEC Labs America, Princeton. From 2009 to 2014 he was a research scientist at Google, NY.  Jason has published over papers primarily in the fields of AI and NLP, including best paper awards at ICML and ECML, and a Test of Time Award for his work ""A Unified Architecture for Natural Language Processing: Deep Neural Networks with Multitask Learning"", ICML 2008 (with Ronan Collobert). He was part of the YouTube team that won a National Academy of Television Arts & Sciences Emmy Award for Technology and Engineering for Personalized Recommendation Engines for Video Discovery.
+
+We will be releasing MOOC curriculum details soon. Thank you @everyone for your patience!"
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-02-06,00:00:27",tarande57,tarande57,"**Attention all Fall 2024 MOOC Participants: All certificates will be released TODAY 8am PT (~8 hours from now!!)**
+
+Thank you so much @everyone for your patience! We ran into some unforeseen technical challenges that have now been resolved. 🙂 
+
+As a heads up:
+- a few certificate earners were ""downgraded"" to the Trailblazer tier if they didn't manage to successfully submit all of the coursework for the tier they initially applied for. 
+- a minority of folks will not receive a certificate. Unfortunately, we will not be offering any form of makeups, regrades, or reconsiderations. But please don't be discouraged! We hope to see you sign up for our Spring 2025 MOOC if you haven't already!
+
+We hope you thoroughly enjoyed the course and congratulations to the certificate recipients!"
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-02-10,14:06:46",tarande57,tarande57,"**Lecture 3 w/ Yu Su TODAY at 4pm PST**
+
+Our 3rd lecture will be happening today @4:00pm PST! You can find the livestream here: https://www.youtube.com/live/zvI4UN2_i-w. 
+
+Today, our amazing guest speaker Yu Su will be presenting, ""On Memory, Reasoning, and Planning of Language Agents.""
+
+How are the contemporary AI agents powered by LLMs different from those of the earlier generations? I argue that their most distinct trait is the capability to use language as a vehicle for reasoning and communication; they are therefore best called ""language agents."" I will describe a conceptual framework for these language agents, followed by a more in-depth discussion on several core competencies, including memory, reasoning, and planning. I will conclude the talk with interesting future directions.
+
+Yu Su is a Distinguished Assistant Professor at the Ohio State University, where he co-directs the NLP group. He has broad interests in artificial intelligence, with a primary interest in the role of language as a vehicle for reasoning and communication. His group is a driving force on the emerging topic of LLM-based language agents, with seminal contributions such as Mind2Web, SeeAct, HippoRAG, LLM-Planner, and MMMU. His work has received many recognitions, including the Best Student Paper Award at CVPR 2024 and Outstanding Paper Award at ACL 2023.
+
+We will be releasing MOOC curriculum details soon. Thank you @everyone for your patience!"
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-02-12,10:04:57",tarande57,tarande57,"@everyone We've officially launched our Spring 2025 MOOC to the greater AI community.
+
+Retweet and share [Prof Dawn Song's Twitter/X announcement](https://x.com/dawnsongtweets/status/1889355520294944829) to help spread the word!"
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-02-14,13:19:07",tarande57,tarande57,"**🚀 Exciting Internship Opportunities at Berkeley RDI for UC Berkeley Students! 🚀**
+
+@everyone Join the Berkeley Center for Responsible, Decentralized Intelligence (RDI) and be a part of our dynamic team pioneering innovations in AI and decentralization.
+
+**🔹 Internship Opportunity #1: Marketing Assistant**
+ As a Marketing Assistant, you’ll:
+- Assist in developing and implementing comprehensive marketing strategies for various initiatives and events (e.g. summits/conferences, etc.)
+- Support our social media presence across platforms, crafting engaging and technically accurate content
+- Create compelling copy for websites, newsletters, and social media posts
+- Design visual marketing materials for social media, websites and other marketing channels
+- Track and analyze marketing metrics to enhance engagement
+- Support the promotion of events and drive community engagement efforts
+
+**🎓 Ideal for students who are:**
+- Creative and analytical, with strong skills in social media and content creation
+- Proficient in visual design tools like Adobe, Figma, and Canva
+- Strong writing and editing skills
+- Self-motivated and resourceful, with a proactive approach to problem-solving; meticulous attention to detail
+- Proficient in marketing analytics and familiar with key marketing tools
+- Ability to work effectively both independently and as part of a team; excellent communication and interpersonal skills
+- Keen interest in AI, decentralization, and emerging technologies.
+**If interested, apply here (https://forms.gle/1Px8Gh9kbBTmx7fg9)**"
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-02-14,13:19:09",tarande57,tarande57,"**🔹 Internship Opportunity #2: Web Developer & Video Editor**
+We’re looking for talented web developers and video editors to:
+- Enhance the RDI website and related sites using GitHub Pages.
+- Edit and process videos for our YouTube channel covering seminars, events, and classes.
+- Produce additional multimedia content as needed.
+
+**🎓 Perfect for students who are:**
+- Independent, dependable, and proficient with GitHub and video editing tools.
+- Skilled in multimedia production and web development.
+**If interested, please send your Resume/CV and cover letter to samanthaguo@berkeley.edu**
+
+**📩 Applications are open and reviewed on a rolling basis. Spots are filling quickly - apply now to be considered!**"
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-02-24,09:52:32",tarande57,tarande57,"**Lecture 4 w/ Hanna Hajishirzi TODAY at 4pm PST**
+
+Our 4th lecture will be happening today @4:00pm PST! You can find the livestream here: https://www.youtube.com/live/cMiu3A7YBks. 
+
+Today, our amazing guest speaker Hanna Hajishirzi will be presenting, ""Open Training Recipes for Reasoning and Agents in Language Models"".
+
+In this talk, I will present my team’s efforts in training language models to develop reasoning capabilities from pre-training to pos-training. Specifically, I will discuss Tulu 3, a state-of-the-art post-trained language model that surpasses DeepSeek V3 and GPT-4o. I will outline our comprehensive, open training recipe, covering data curation, supervised fine-tuning, preference tuning, and innovative reinforcement learning method with verifiable rewards (RLVR), and our test-time scaling methods. Next, I will show how we can boost the reasoning capabilities of language models in the pre-training phase. Finally, I will showcase our efforts in building agents in a real application to synthesize scientific content.  
+
+Hanna Hajishirzi is the Torode Family Associate Professor in the Allen School of Computer Science and Engineering at the University of Washington and a Senior Director of NLP at AI2. Her current research delves into building open source language models, accelerating the science of language modeling, broadening their scope, and enhancing their applicability and usefulness for human lives. She is the recipient of numerous awards, including the Sloan Fellowship, NSF CAREER Award, Intel Rising Star Award, Allen Distinguished Investigator Award, Academic Achievement UIUC Alumni Award, and Innovator of the Year Award by GeekWire. The work from her lab has been nominated for or has received best paper awards at various conferences and has been featured in numerous magazines and newspapers.
+
+We will be releasing MOOC curriculum details soon. Thank you @everyone for your patience!"
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-03-03,10:34:23",tarande57,tarande57,"**Lecture 5 w/ Charles Sutton TODAY at 4pm PST**
+
+@everyone Today, our amazing guest speaker Charles Sutton will be presenting, ""Coding Agents and AI for Vulnerability Detection."" Livestream Link: https://www.youtube.com/live/JCk6qJtaCSU
+
+Computer security experts reason about what software systems do, and they use external tools to learn about systems, and test their conclusions. That sounds a lot like LLM agents. I’ll talk about some early stage research in LLM research for computer security tasks, such as finding software vulnerabilities. I’ll also present some of my personal opinions about important issues in the design of LLM agents.
+
+Charles Sutton is a Research Scientist at Google DeepMind. His research in machine learning is motivated by applications in code generation, software engineering, programming languages, and computer security. His work in software engineering has won two ACM Distinguished Paper Awards (FSE 2014, ICSE 2020) and a 10-year Most Influential Paper award (MSR 2023). Previously, Dr Sutton was a Reader (equivalent to Associate Professor: http://bit.ly/1W9UhqT) in Machine Learning at the University of Edinburgh. His PhD is from the University of Massachusetts Amherst, and he has done postdoctoral work at the University of California Berkeley."
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-03-10,12:12:28",tarande57,tarande57,"**Lecture 6 w/ Ruslan Salakhutdinov TODAY at 4pm PST**
+
+@everyone Today, our amazing guest speaker Ruslan Salakhutdinov will be presenting, ""Multimodal Autonomous AI Agents."" 
+
+Livestream Link: https://www.youtube.com/live/RPINOYM12RU
+
+In recent years, the rise of Large Language Models (LLMs) with advanced general capabilities has accelerated progress toward building language-guided agents capable of performing complex, multi-step tasks, much like human assistants. Developing agents that can perceive, plan, and act autonomously has long been a central goal of artificial intelligence research. In this talk, I will introduce Multimodal AI agents capable of planning, reasoning, and executing actions on the web, that can not only comprehend textual information but also effectively navigate and interact with visual settings. I will present VisualWebArena, a novel framework for evaluating multimodal autonomous language agents, along with an inference-time search algorithm that enables explicit exploration and multi-step planning in interactive web environments. Next, I will demonstrate how an automated data pipeline can facilitate Internet-scale web-agent training by generating web navigation tasks across 150,000 live websites, deploying LLM agents, and assessing their performance. Finally, I will discuss some insights for developing more capable autonomous agents in both digital and physical environments.
+
+Russ Salakhutdinov earned his PhD in Computer Science from the University of Toronto under the supervision of Nobel Laureate Geoffrey Hinton. After completing a postdoctoral fellowship at MIT, he joined the University of Toronto before moving to Carnegie Mellon University. He also served as Director of AI Research at Apple and is currently the VP of Research at Meta."
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-03-17,10:55:05",tarande57,tarande57,"**Lecture 7 w/ Caiming Xiong TODAY at 4pm PDT**
+
+@everyone Today, our outstanding guest speaker Caiming Xiong will be presenting, ""Multimodal Agents – From Perception to Action.""
+
+Livestream Link: https://www.youtube.com/live/n__Tim8K2IY
+
+Multimodal agents are AI systems that learn and operate across multiple modalities—vision, language, audio, etc.. By integrating perception, grounding, reasoning, and action, these agents are poised to transform tasks ranging from GUI automation to household robotics. In this talk, we will explore the current landscape of multimodal agents, with a particular focus on measuring their capabilities in realistic environments (OSWorld), creating large-scale datasets (AgentTrek), designing advanced modeling architectures (Aguvis, Magma), and incorporating synthetic chain-of-thought-and-action (TACO) for more robust vision-language-action alignment.
+
+Caiming is SVP of AI Research at Salesforce driving the company's mission to revolutionize customer engagement and business solutions through cutting-edge AI technologies. He earned his Ph.D. in Computer Science from SUNY at Buffalo, specializing in areas such as natural language processing, computer vision, reinforcement learning, and deep learning. He has published more than 200 papers with >50,000 citations, delivering profound insights at prestigious conferences and symposiums. He has served on the organizing committees of multiple workshops and taken on the role of conference area chair in top-tier conferences, including NeurIPS, ICML, ICLR, EMNLP, ACL, AAAI, among others."
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-03-18,17:02:39",tarande57,tarande57,"🎓 **MOOC Coursework Requirements & Certificate Instructions** 🎓 
+
+@everyone We've just released our coursework and completion certificate instructions to the bottom of our MOOC website: https://llmagents-learning.org/sp25 ! 🚀 
+
+All of the details are there, but here are some key points I want to draw your attention to:
+
+• **5 Tiers:** Trailblazer ⚡ , Mastery 🔬 , Ninja 🥷 , Legendary 🏆 , Honorary 🌟 
+• **Research Track Application:** *Select* students will be given mentorship by Berkeley postdocs/mentors on an AgentX Research Track project. The application is now live! [APPLY NOW](https://forms.gle/E2D69euNBjSmYsK28)
+     • __DUE March 26th at 11:59pm PDT__
+     • Mentorship is not required to join or succeed in AgentX.
+• **Labs** and the **Certificate Declaration form** will be released in April
+
+All assignments will be tentatively due at the end of May (exact date/time TBA) and certificates will be released in June. ⏰"
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-03-30,22:09:10",tarande57,tarande57,"**Lecture 8 w/ Thomas Hubert TIME CHANGE  👉  10AM PDT  ⏰ **
+
+@everyone Our outstanding guest speaker Thomas Hubert will be presenting, ""AlphaProof: when reinforcement learning meets formal mathematics"" at 10AM PDT 3/31.
+
+Livestream Link: https://www.youtube.com/live/3gaEMscOMAU 
+
+Galileo, the renowned Italian astronomer, physicist, and mathematician, famously described mathematics as the language of the universe. Progress since only confirmed his intuition as the world we live in can be described with extreme precision with just a few mathematical equations. In the last 70 years, the rise of computers has also enriched our understanding of and revolutionised the world we live in. Mathematics tremendously benefited from this digital revolution as well: while Gauss had to compute primes by hand, computers and computation are now routinely used in research mathematics and contribute to grand problems like the Birch and Swinnerton-Dyer conjecture, one of the Millennium Prize Problems. Today, computers are entering a new age, one in which computation can be transformed into reasoning. In this talk, I would like to discuss two such developments that will undoubtedly have an integral role to play in the future of mathematics: the concurrent rise of formal mathematics and of machine intelligence.
+
+Hubert is a research engineer at Google DeepMind and earned his MS in Mathematics from Stanford University."
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-04-07,12:28:50",tarande57,tarande57,"**Lecture 9 w/ Kaiyu Yang TODAY at 4pm PDT**
+
+@everyone Our outstanding guest speaker and co-instructor Kaiyu Yang will be presenting, ""Language models for autoformalization and theorem proving.""
+
+Livestream Link: https://www.youtube.com/live/cLhWEyMQ4mQ
+
+AI for Mathematics (AI4Math) is intellectually intriguing and crucial for AI-driven system design and verification. Extensive efforts on AI4Math have mirrored techniques in NLP, in particular, training large language models on carefully curated math datasets in text form. As a complementary yet less explored avenue, formal mathematical reasoning is grounded in formal systems such as proof assistants, which can verify the correctness of reasoning and provide automatic feedback. In this talk, I'll present the basics of using LLM for formal mathematical reasoning, including two key tasks: theorem proving (generating formal proofs given theorem statements) and autoformalization (translating from informal to formal).
+
+Dr. Kaiyu Yang is a Research Scientist at Meta Fundamental AI Research (FAIR), where he focuses on enhancing AI's capabilities in mathematical reasoning by integrating formal systems such as Lean."
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-04-14,12:18:54",tarande57,tarande57,"**Lecture 10 w/ Sean Welleck TODAY at 4pm PDT**
+
+@everyone Our amazing guest speaker Sean Welleck will be presenting, ""Bridging Informal and Formal Mathematical Reasoning.""
+
+Livestream Link: https://www.youtube.com/live/Gy5Nm17l9oo
+
+Formalizing mathematics in Lean can feel far removed from the informal reasoning common in mathematical practice. In this lecture, I will present AI-powered tools that support proof development at multiple levels: from automating low-level steps with LeanHammer, to sketching the main ideas of a proof, to refactoring proofs and incorporating informal insights. These components form the foundation of a full-stack agent architecture aimed at making formal reasoning more intuitive, efficient, and closer to the way mathematics is conventionally explored and communicated.
+
+Sean Welleck is an Assistant Professor at Carnegie Mellon University, where he leads the Machine Learning, Language, and Logic (L3) Lab. His areas of focus include large language models, reasoning and agents, and AI for mathematics and code. Sean received a Ph.D. from New York University. He was a postdoctoral scholar at the University of Washington and the Allen Institute for Artificial Intelligence. He is a recipient of a NeurIPS 2021 Outstanding Paper Award, and two NVIDIA AI Pioneering Research Awards."
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-04-21,00:11:10",tarande57,tarande57,"**Lecture 11 w/ Swarat Chaudhuri TIME CHANGE 👉  10am PDT**
+
+@everyone At 10am PDT today, our outstanding guest speaker Swarat Chaudhuri will be presenting, ""Large Language Models, Abstraction, and Discovery"".
+
+Livestream Link: https://www.youtube.com/live/IHc0TEMrEdY
+
+I will talk about two ideas: (i) LLMs are a powerful tool for discovering new abstract concepts, and (ii) “ground-truth signals” such as symbolic mathematics engines and real-world experiments can help mitigate the unreliability of LLMs. I will first instantiate these ideas in the theorem-proving setting, showing that feedback from proof assistants can enable blackbox LLMs to prove formal theorems, and also that LLMs can help decompose high-level proof goals into subtasks. In the second part of the talk, I will show how LLM-aided concept discovery can enhance an LLM-guided evolutionary search in symbolic regression, a key problem in AI-aided scientific discovery.
+
+Swarat Chaudhuri is a Professor of Computer Science at UT Austin and a Visiting Researcher at Google Deepmind. His research lies at the interface of programming languages, automated reasoning, and machine learning. His aim as a researcher is to develop a new class of intelligent systems that are reliable, transparent, and secure by construction and can solve reasoning-intensive tasks beyond the scope of contemporary AI. Prof. Chaudhuri has received the NSF CAREER award, the ACM SIGPLAN John Reynolds Dissertation award, the Morris and Dorothy Rubinoff Dissertation award from the University of Pennsylvania, Meta and Google Research awards, and several ACM SIGPLAN and SIGSOFT distinguished paper awards. He served as Program Chair for the CAV 2016 and ICLR 2024 conferences."
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-04-28,11:10:47",tarande57,tarande57,"**Lecture 12 w/ Dawn Song TODAY at 4pm PDT**
+
+@everyone Our final lecture will be happening today at 4pm PDT! You can find the livestream here: https://www.youtube.com/live/ti6yPE2VPZc. 
+
+Today, our head instructor Dawn Song will be presenting “Towards building safe and secure agentic AI”.
+
+Dawn Song is a Professor in Computer Science  at UC Berkeley and  co-Director of Berkeley Center on Responsible Decentralized Intelligence. Her research interest lies in AI, AI safety & security, and decentralization. She is the recipient of numerous awards including the MacArthur Fellowship, Guggenheim Fellowship, and more than 10 Test-of-Time Awards and Best Paper Awards. She is an ACM Fellow and  IEEE Fellow. She is ranked the most cited scholar in computer security (AMiner Award). She is also a serial entrepreneur, named on the Female Founder 100 List by Inc. and Wired25 List of Innovators. 
+
+As a reminder, all of the coursework for the MOOC (due at the end of May) is on the [MOOC website](https://llmagents-learning.org/sp25), except for the labs which we are hoping to release this week! Please ask any questions in <#1280370030609170494> ."
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-05-11,14:01:33",tarande57,tarande57,"**Reminder: MOOC Coursework due May 31st 11:59pm PDT!**
+
+Thank you @everyone for joining us for our Advanced LLM Agents MOOC! We hope you've enjoyed the lectures from our amazing guest speakers! Here is another reminder about all of the [coursework and certificate requirements](https://docs.google.com/document/d/1t4HS15dySldeElgDbtKmM3piInllq_auHtpO-SRScjo/edit?usp=sharing) for the MOOC. *All of these details are also available on the bottom of the [MOOC website](https://llmagents-learning.org/sp25).*
+
+**Earn Your Certificate in 3 Steps**
+
+__STEP 1.__ Complete all of the coursework for your desired tier by May 31st at 11:59pm PDT.
+               • All assignments should send a Google Forms confirmation email on successful submission.
+               • We track your progress throughout the course via your email. Please use the same email address when submitting all coursework.
+               • You can only earn one certificate from this course.
+
+__STEP 2.__ Complete the [Certificate Declaration Form](https://forms.gle/iPA2MUpHdtrBE1vu5) by May 31st at 11:59pm PDT.
+
+__STEP 3.__ Certificates will be sent to your email in June!
+
+Please ask any questions in <#1280370030609170494> ."
