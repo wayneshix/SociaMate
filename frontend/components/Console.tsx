@@ -2,7 +2,7 @@
 
 import Papa from "papaparse";
 
-export function Console({ text, summary, draftResponse }: { text: string; summary: string; draftResponse: string }) {
+export function Console({ text, summary, draftResponse, keyInfo, icsFile }: { text: string; summary: string; draftResponse: string; keyInfo: string;icsFile: string;}) {
   let parsedData: string[][] = [];
 
   if (text.trim().startsWith("{") || text.trim().startsWith("[")) {
@@ -51,6 +51,25 @@ export function Console({ text, summary, draftResponse }: { text: string; summar
           <textarea value={text} readOnly className="w-full h-40 border p-2 mt-2" />
         )}
       </div>
+      {keyInfo && (
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Key Information</h2>
+          <textarea
+            value={keyInfo}
+            readOnly
+            className="w-full h-40 border p-2 mt-2"
+          />
+          {icsFile && (
+            <a
+              href={`/${icsFile}`}
+              download
+              className="mt-2 inline-block text-blue-600 underline"
+            >
+              Download .ics
+            </a>
+          )}
+        </div>
+      )}
 
       <div>
         <h2 className="text-xl font-semibold mb-2">Summary</h2>

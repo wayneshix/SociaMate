@@ -121,3 +121,36 @@ export async function sendTextForDraftResponse(text: string, asUser?: string) {
 
   return await response.json();
 }
+
+export async function sendTextForKeyInfo(text: string) {
+  try {
+    const textHash = btoa(text.substring(0, 100)).replace(/[^a-zA-Z0-9]/g, "");
+    let conversationId = conversationCache[textHash];
+    const messages = parseCSVMessages(text);
+
+    if (!messages) {
+      return { key_info: "", ics_file: "" };
+    }
+    if (!conversationId) {
+      const createRes = await fetch("http://localhost:8000/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages, conversation_id: uuidv4() }),
+      });
+      if (!createRes.ok) throw new Error("Create conversation failed");
+      const { conversation_id } = await createRes.json();
+      conversationId = conversation_id;
+      conversationCache[textHash] = conversationId;
+    }
+    const keyRes = await fetch(
+      `http://localhost:8000/conversations/${conversationId}/keyinfo`,
+      { method: "POST" }
+    );
+    if (!keyRes.ok) throw new Error("KeyInfo request failed");
+    return (await keyRes.json()) as { key_info: string; ics_file: string };
+
+  } catch (e) {
+    console.error("sendTextForKeyInfo error:", e);
+    return { key_info: "", ics_file: "" };
+  }
+}

@@ -6,7 +6,7 @@ import logging
 import time
 from datetime import datetime
 from pydantic import BaseModel, Field
-
+from app.services.infoextractor import InfoExtractorService
 from app.database import get_db
 from app.services.summarizer import summarizer_service
 from app.repositories.message_repository import message_repository
@@ -14,7 +14,7 @@ from app.services.context import context_service
 from app.services.response_drafter import response_drafter_service
 
 router = APIRouter()
-
+extractor = InfoExtractorService()
 logger = logging.getLogger(__name__)
 
 class TextRequest(BaseModel):
@@ -192,3 +192,18 @@ async def draft_response(request: Request):
         "draft": draft,
         "processing_time": processing_time
     }
+@router.post("/conversations/{conversation_id}/keyinfo")
+async def get_key_info(
+    conversation_id: str,
+    db: Session = Depends(get_db)
+):
+    context = context_service.get_context(db, conversation_id, query=None)
+    if not context:
+        raise HTTPException(404, "Conversation not found")
+    raw = extractor.extract_key_info(context)
+    if not raw:
+        return {"key_info": "", "ics_file": ""}
+    refined = extractor.refine_key_info(context, raw)
+    ics = extractor.generate_ics(refined)
+
+    return {"key_info": refined, "ics_file": ics}

@@ -3,15 +3,18 @@
 import { useState, useEffect } from "react";
 import { UploadButton } from "@/components/UploadButton";
 import { Console } from "@/components/Console";
-import { sendTextToBackend, sendTextForDraftResponse } from "@/utils/api";
+import { sendTextToBackend, sendTextForDraftResponse, sendTextForKeyInfo} from "@/utils/api";
 import Papa from "papaparse";
 
 export default function Home() {
   const [text, setText] = useState("");
   const [summary, setSummary] = useState("");
   const [draftResponse, setDraftResponse] = useState("");
+  const [keyInfo, setKeyInfo] = useState("");
+  const [icsFile, setIcsFile] = useState("");  
   const [loading, setLoading] = useState(false);
   const [draftLoading, setDraftLoading] = useState(false);
+  const [keyLoading, setKeyLoading] = useState(false);
   const [userNames, setUserNames] = useState<string[]>([]);
   const [selectedUser, setSelectedUser] = useState("");
 
@@ -74,12 +77,27 @@ export default function Home() {
       setDraftLoading(false);
     }
   };
+  const handleGetKeyInfo = async () => {
+    if (!text) return;
+    setKeyLoading(true);
+    const { key_info, ics_file } = await sendTextForKeyInfo(text);
+    setKeyInfo(key_info);
+    setIcsFile(ics_file);
+    setKeyLoading(false);
+  };
 
   return (
     <main className="p-8">
       <h1 className="text-3xl font-bold mb-4">Social Assistant Console</h1>
       <UploadButton onUpload={handleFileUpload} />
       <div className="flex flex-wrap gap-4 mt-4">
+      <button
+          onClick={handleGetKeyInfo}
+          disabled={!text || keyLoading}
+          className="p-2 bg-purple-500 text-white rounded disabled:opacity-50"
+        >
+          {keyLoading ? "Extracting..." : "Get Key Info"}
+        </button>
         <button
           onClick={handleSummarize}
           disabled={!text || loading}
@@ -112,7 +130,7 @@ export default function Home() {
           )}
         </div>
       </div>
-      <Console text={text} summary={summary} draftResponse={draftResponse} />
+      <Console text={text} summary={summary} draftResponse={draftResponse} keyInfo={keyInfo} icsFile={icsFile}/>
     </main>
   );
 }
