@@ -197,7 +197,7 @@ async def get_key_info(
     conversation_id: str,
     db: Session = Depends(get_db)
 ):
-    context = context_service.get_context(db, conversation_id, query=None)
+    context = context_service.get_context(db, conversation_id, query_text=None)
     if not context:
         raise HTTPException(404, "Conversation not found")
     raw = extractor.extract_key_info(context)
