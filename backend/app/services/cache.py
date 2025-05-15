@@ -46,7 +46,7 @@ class RedisCache:
             logger.exception(f"Failed to connect to Redis: {str(e)}")
             self.client = None
     
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Optional[str]:
         """
         Get a value from the cache.
         
@@ -68,16 +68,19 @@ class RedisCache:
             
             if value:
                 try:
-                    return json.loads(value)
+                    return value.decode('utf-8')
                 except json.JSONDecodeError:
                     return value
             
             return None
+        except redis.exceptions.ConnectionError as e:
+            logger.warning(f"Redis connection failed, proceeding without cache: {e}")
+            return None
         except Exception as e:
-            logger.exception(f"Error getting from cache: {str(e)}")
+            logger.error(f"Error getting from cache: {e}")
             return None
     
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: str, ttl: Optional[int] = None) -> bool:
         """
         Set a value in the cache.
         
@@ -106,9 +109,12 @@ class RedisCache:
             elapsed = time.time() - start_time
             logger.debug(f"Cache set for '{key}' took {elapsed:.4f}s")
             
-            return result
+            return bool(result)
+        except redis.exceptions.ConnectionError as e:
+            logger.warning(f"Redis connection failed, proceeding without cache: {e}")
+            return False
         except Exception as e:
-            logger.exception(f"Error setting cache: {str(e)}")
+            logger.error(f"Error setting cache: {e}")
             return False
     
     def delete(self, key: str) -> bool:

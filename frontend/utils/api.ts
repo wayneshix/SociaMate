@@ -105,13 +105,20 @@ export async function sendTextToBackend(text: string) {
 }
 
 // Draft response API function
-export async function sendTextForDraftResponse(text: string, asUser?: string) {
+export async function sendTextForDraftResponse(
+  text: string, 
+  asUser?: string, 
+  userInput?: string,
+  preferSomething: boolean = false
+) {
   const response = await fetch("http://localhost:8000/draft_response", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 
       text,
-      as_user: asUser 
+      as_user: asUser,
+      user_input: userInput,
+      prefer_something: preferSomething
     }),
   });
 

@@ -17,6 +17,8 @@ export default function Home() {
   const [keyLoading, setKeyLoading] = useState(false);
   const [userNames, setUserNames] = useState<string[]>([]);
   const [selectedUser, setSelectedUser] = useState("");
+  const [userInput, setUserInput] = useState("");
+  const [manualUsername, setManualUsername] = useState("");
 
   const handleFileUpload = (fileContent: string) => {
     setText(fileContent);
@@ -69,7 +71,8 @@ export default function Home() {
   const handleDraftResponse = async () => {
     try {
       setDraftLoading(true);
-      const result = await sendTextForDraftResponse(text, selectedUser);
+      const username = manualUsername || selectedUser;
+      const result = await sendTextForDraftResponse(text, username, userInput);
       setDraftResponse(result.draft);
     } catch (error) {
       alert("Failed to draft response.");
@@ -77,6 +80,20 @@ export default function Home() {
       setDraftLoading(false);
     }
   };
+
+  const handlePreferSomething = async () => {
+    try {
+      setDraftLoading(true);
+      const username = manualUsername || selectedUser;
+      const result = await sendTextForDraftResponse(text, username, userInput, true);
+      setDraftResponse(result.draft);
+    } catch (error) {
+      alert("Failed to generate alternative response.");
+    } finally {
+      setDraftLoading(false);
+    }
+  };
+
   const handleGetKeyInfo = async () => {
     if (!text) return;
     setKeyLoading(true);
@@ -91,30 +108,29 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-4">Social Assistant Console</h1>
       <UploadButton onUpload={handleFileUpload} />
       <div className="flex flex-wrap gap-4 mt-4">
-      <button
+        <button
           onClick={handleGetKeyInfo}
           disabled={!text || keyLoading}
-          className="p-2 bg-purple-500 text-white rounded disabled:opacity-50"
+          className="p-2 bg-purple-500 text-white rounded disabled:opacity-50 cursor-pointer hover:bg-purple-600 transition-colors"
         >
           {keyLoading ? "Extracting..." : "Get Key Info"}
         </button>
         <button
           onClick={handleSummarize}
           disabled={!text || loading}
-          className="p-2 bg-blue-500 text-white rounded disabled:opacity-50"
+          className="p-2 bg-blue-500 text-white rounded disabled:opacity-50 cursor-pointer hover:bg-blue-600 transition-colors"
         >
           {loading ? "Summarizing..." : "Summarize"}
         </button>
         
         <div className="flex items-center gap-2">
-          <button
-            onClick={handleDraftResponse}
-            disabled={!text || draftLoading}
-            className="p-2 bg-green-500 text-white rounded disabled:opacity-50"
-          >
-            {draftLoading ? "Drafting..." : "Draft Response"}
-          </button>
-          
+          <input
+            type="text"
+            placeholder="Enter username manually"
+            value={manualUsername}
+            onChange={(e) => setManualUsername(e.target.value)}
+            className="p-2 border rounded"
+          />
           {userNames.length > 0 && (
             <select 
               value={selectedUser}
@@ -130,7 +146,16 @@ export default function Home() {
           )}
         </div>
       </div>
-      <Console text={text} summary={summary} draftResponse={draftResponse} keyInfo={keyInfo} icsFile={icsFile}/>
+      <Console 
+        text={text} 
+        summary={summary} 
+        draftResponse={draftResponse} 
+        keyInfo={keyInfo} 
+        icsFile={icsFile}
+        userInput={userInput}
+        onUserInputChange={setUserInput}
+        onPreferSomething={handlePreferSomething}
+      />
     </main>
   );
 }

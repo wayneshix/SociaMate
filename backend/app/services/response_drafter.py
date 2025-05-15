@@ -26,7 +26,8 @@ class ResponseDrafterService:
         self,
         conversation_text: str,
         as_user: Optional[str] = None,
-        query: Optional[str] = None
+        user_input: Optional[str] = None,
+        prefer_something: bool = False
     ) -> str:
         start_time = time.time()
 
@@ -52,6 +53,17 @@ class ResponseDrafterService:
         else:
             system_prompt += (
                 f"The user needs you to draft a response to this conversation.\n"
+            )
+
+        if user_input:
+            system_prompt += (
+                f"\nThe user has provided this input: '{user_input}'\n"
+                f"Use this as a base for your response, incorporating it naturally into the conversation context.\n"
+            )
+
+        if prefer_something:
+            system_prompt += (
+                f"\nThe user wants an alternative response. Please provide a different perspective or approach while maintaining the same tone and style.\n"
             )
         
         system_prompt += (

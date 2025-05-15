@@ -69,13 +69,13 @@ class SummarizerService:
                 {"role": "user", "content": conversation_text[:6000]}
             ]
 
-            response = openai.chat.completions.create(
+            response = openai_client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=messages,
                 temperature=0.3
             )
 
-            summary = response["choices"][0]["message"]["content"].strip()
+            summary = response.choices[0].message.content.strip()
             logger.info(f"OpenAI call took {time.time() - start_time:.2f}s")
             return summary
 

@@ -2,7 +2,27 @@
 
 import Papa from "papaparse";
 
-export function Console({ text, summary, draftResponse, keyInfo, icsFile }: { text: string; summary: string; draftResponse: string; keyInfo: string;icsFile: string;}) {
+interface ConsoleProps {
+  text: string;
+  summary: string;
+  draftResponse: string;
+  keyInfo: string;
+  icsFile: string;
+  userInput: string;
+  onUserInputChange: (value: string) => void;
+  onPreferSomething: () => void;
+}
+
+export function Console({ 
+  text, 
+  summary, 
+  draftResponse, 
+  keyInfo, 
+  icsFile,
+  userInput,
+  onUserInputChange,
+  onPreferSomething
+}: ConsoleProps) {
   let parsedData: string[][] = [];
 
   if (text.trim().startsWith("{") || text.trim().startsWith("[")) {
@@ -78,7 +98,28 @@ export function Console({ text, summary, draftResponse, keyInfo, icsFile }: { te
 
       <div>
         <h2 className="text-xl font-semibold mb-2">Draft Response</h2>
-        <textarea value={draftResponse} readOnly className="w-full h-40 border p-2 mt-2" />
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              placeholder="Enter your message or question..."
+              className="flex-1 p-2 border rounded"
+              value={userInput}
+              onChange={(e) => onUserInputChange(e.target.value)}
+            />
+            <button
+              onClick={onPreferSomething}
+              className="p-2 bg-green-500 text-white rounded disabled:opacity-50 hover:bg-green-600 transition-colors cursor-pointer"
+            >
+              Draft Response
+            </button>
+          </div>
+          <textarea 
+            value={draftResponse} 
+            readOnly 
+            className="w-full h-40 border p-2" 
+          />
+        </div>
       </div>
     </div>
   );

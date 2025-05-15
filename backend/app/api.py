@@ -40,9 +40,11 @@ class SummaryResponse(BaseModel):
     summary: str
     processing_time: float
 
-class DraftResponse(BaseModel):
-    draft: str
-    processing_time: float
+class DraftResponseRequest(BaseModel):
+    text: str
+    as_user: Optional[str] = None
+    user_input: Optional[str] = None
+    prefer_something: bool = False
 
 @router.post("/summarize")
 async def summarize(request: Request):
@@ -175,35 +177,56 @@ async def get_conversation_summary(
     }
 
 @router.post("/draft_response")
-async def draft_response(request: Request):
+async def draft_response(request: DraftResponseRequest):
     """Legacy endpoint for drafting responses directly."""
-    data = await request.json()
-    text = data.get("text", "")
-    as_user = data.get("as_user", None)
-
-    if not text:
+    if not request.text:
         return {"error": "No text provided."}
 
     start_time = time.time()
-    draft = response_drafter_service.draft_response(text, as_user)
+    draft = response_drafter_service.draft_response(
+        request.text, 
+        request.as_user,
+        request.user_input,
+        request.prefer_something
+    )
     processing_time = time.time() - start_time
     
     return {
         "draft": draft,
         "processing_time": processing_time
     }
+
 @router.post("/conversations/{conversation_id}/keyinfo")
 async def get_key_info(
     conversation_id: str,
     db: Session = Depends(get_db)
 ):
-    context = context_service.get_context(db, conversation_id, query_text=None)
-    if not context:
-        raise HTTPException(404, "Conversation not found")
-    raw = extractor.extract_key_info(context)
-    if not raw:
-        return {"key_info": "", "ics_file": ""}
-    refined = extractor.refine_key_info_with_gpt(context, raw)
-    ics = extractor.generate_ics(refined)
+    try:
+        # Get messages directly from the database if context service fails
+        messages = message_repository.get_messages(db, conversation_id)
+        if not messages:
+            raise HTTPException(404, "Conversation not found")
+            
+        # Convert messages to text format
+        conversation_text = "\n\n".join([
+            f"{msg.author}: {msg.content}"
+            for msg in messages
+        ])
+        
+        # Extract key info
+        raw = extractor.extract_key_info(conversation_text)
+        if not raw:
+            return {"key_info": "No events or important dates found in the conversation.", "ics_file": ""}
+            
+        # Refine with GPT
+        refined = extractor.refine_key_info_with_gpt(conversation_text, raw)
+        if not refined or refined.strip() == "":
+            return {"key_info": "No events or important dates found in the conversation.", "ics_file": ""}
+        
+        # Generate ICS file
+        ics = extractor.generate_ics(refined)
 
-    return {"key_info": refined, "ics_file": ics}
+        return {"key_info": refined, "ics_file": ics}
+    except Exception as e:
+        logger.error(f"Error getting key info: {e}")
+        raise HTTPException(500, f"Failed to get key info: {str(e)}")

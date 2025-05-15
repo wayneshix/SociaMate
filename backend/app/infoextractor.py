@@ -23,37 +23,83 @@ class InfoExtractorService:
 
     def extract_key_info(self, text: str) -> str:
         events = []
+        # More comprehensive event keywords
+        academic_events = r"\b(Lecture|class|exam|test|quiz|assignment|project|presentation|demo|review|discussion|tutorial|lab|office hours)\b"
+        professional_events = r"\b(meeting|consultation|check-in|catch-up|sync|standup|planning|retrospective|review|debrief|briefing|orientation|training|onboarding)\b"
+        social_events = r"\b(workshop|hackathon|meetup|gathering|party|celebration|ceremony|graduation|commencement|convocation|induction|inauguration|launch|opening|closing|finale|showcase|exhibition|fair|festival)\b"
+        general_events = r"\b(Reminder|starts|TODAY|TIME CHANGE|event|appointment|deadline|due|schedule|session|call|interview)\b"
+        event_keywords = f"({academic_events}|{professional_events}|{social_events}|{general_events})"
+        
+        # More flexible date patterns
+        date_patterns = [
+            r"\b(\d{4}[-/]\d{1,2}[-/]\d{1,2})\b",  # YYYY-MM-DD or YYYY/MM/DD
+            r"\b(\d{1,2}[-/]\d{1,2}[-/]\d{4})\b",  # DD-MM-YYYY or DD/MM/YYYY
+            r"\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4}\b",  # Month DD, YYYY
+            r"\b\d{1,2}(?:st|nd|rd|th)?\s+(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?),?\s+\d{4}\b",  # DD Month YYYY
+            r"\b(tomorrow|today|next week|next month)\b"  # Relative dates
+        ]
+        
+        # More flexible time patterns
+        time_patterns = [
+            r"\b(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm|A\.M\.|P\.M\.|a\.m\.|p\.m\.))\b",  # 12-hour format
+            r"\b(\d{1,2}:\d{2})\b",  # 24-hour format
+            r"\b(\d{1,2}(?::\d{2})?\s*(?:o'clock|oclock|o' clock|o clock))\b",  # o'clock format
+            r"\b(\d{1,2}(?::\d{2})?)\b"  # Just numbers
+        ]
+
         for block in text.split("\n\n"):
             line = block.strip()
             if not line:
                 continue
-            if not re.search(r"\b(Lecture|class|Reminder|starts|TODAY|TIME CHANGE)\b", line, re.IGNORECASE):
+                
+            # Check for event keywords
+            if not re.search(event_keywords, line, re.IGNORECASE):
                 continue
+                
+            # Clean the text but preserve more information
             clean = re.sub(r"\*\*|\[.*?\]\(.*?\)", "", line)
             clean = re.sub(r"http\S+", "", clean).strip()
-            dt = parse_date(clean, settings={"PREFER_DATES_FROM": "future"})
-            m_date = re.search(r"(\d{4}-\d{2}-\d{2})", clean)
-            if m_date:
-                dt = dt or parse_date(m_date.group(1))
-            m_time = re.search(r"(\d{1,2}(?::\d{2})?\s*(?:AM|PM))", clean, re.IGNORECASE)
-            if dt and m_time:
-                timestr = m_time.group(1).upper().replace(" ", "")
-                events.append(f"{clean} — {dt.strftime('%Y-%m-%d')} at {timestr}")
+            
+            # Try to find a date
+            dt = None
+            for pattern in date_patterns:
+                m_date = re.search(pattern, clean, re.IGNORECASE)
+                if m_date:
+                    try:
+                        dt = parse_date(m_date.group(1), settings={"PREFER_DATES_FROM": "future"})
+                        if dt:
+                            break
+                    except:
+                        continue
+            
+            # Try to find a time
+            time_str = None
+            for pattern in time_patterns:
+                m_time = re.search(pattern, clean, re.IGNORECASE)
+                if m_time:
+                    time_str = m_time.group(1).upper().replace(" ", "")
+                    break
+            
+            # If we found either a date or time, include the event
+            if dt or time_str:
+                date_str = dt.strftime('%Y-%m-%d') if dt else "TBD"
+                time_str = time_str or "TBD"
+                events.append(f"{clean} — {date_str} at {time_str}")
 
-        return "\n".join(events)
+        return "\n".join(events) if events else ""
 
     def refine_key_info_with_gpt(self, conversation_text: str, key_info: str) -> str:
         if not key_info:
             return ""
         system_prompt = (
             "You are an expert at validating and formatting notification‐style events.\n"
-            "Below are candidate events in the form “Description — YYYY-MM-DD at HH:MMAM/PM”.\n"
+            "Below are candidate events in the form \"Description - YYYY-MM-DD at HH:MMAM/PM\".\n"
             "Please:\n"
             "  1. Ensure each is correctly formatted.\n"
             "  2. Remove any leftover URLs or markdown.\n"
             "  3. Deduplicate if there are repeats.\n"
             "Output each event as a bullet point, e.g.:\n"
-            "- Lecture 2 w/ Jason Weston — 2025-02-03 at 4:00PM\n"
+            "- Lecture 2 w/ Jason Weston - 2025-02-03 at 4:00PM\n"
             f"{key_info}"
         )
         try:
