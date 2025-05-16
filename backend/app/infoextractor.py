@@ -3,7 +3,7 @@ import os
 import re
 import time
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from openai import OpenAIError, OpenAI
 from dateparser import parse as parse_date
@@ -14,6 +14,10 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 openai_api_key = os.getenv("OPENAI_API_KEY")
 openai_client = OpenAI(api_key=openai_api_key)
+
+# Create a directory for ICS files if it doesn't exist
+ICS_DIR = os.path.join(os.getcwd(), "ics_files")
+os.makedirs(ICS_DIR, exist_ok=True)
 
 class InfoExtractorService:
     """Service for extracting key notification information from conversations."""
@@ -93,14 +97,17 @@ class InfoExtractorService:
             return ""
         system_prompt = (
             "You are an expert at validating and formatting notification‐style events.\n"
-            "Below are candidate events in the form \"Description - YYYY-MM-DD at HH:MMAM/PM\".\n"
-            "Please:\n"
-            "  1. Ensure each is correctly formatted.\n"
-            "  2. Remove any leftover URLs or markdown.\n"
-            "  3. Deduplicate if there are repeats.\n"
-            "Output each event as a bullet point, e.g.:\n"
-            "- Lecture 2 w/ Jason Weston - 2025-02-03 at 4:00PM\n"
-            f"{key_info}"
+            "Below are candidate events. Please format them as follows:\n"
+            "1. Each event should be on a new line starting with a dash\n"
+            "2. Format: \"- Event Description — YYYY-MM-DD at HH:MMAM/PM\"\n"
+            "3. Times must be in 12-hour format with AM/PM\n"
+            "4. Skip events with TBD dates or times\n"
+            "5. Remove any leftover URLs or markdown\n"
+            "6. Deduplicate if there are repeats\n"
+            "Example format:\n"
+            "- Lecture 2 w/ Jason Weston — 2025-02-03 at 4:00PM\n"
+            "- Team Meeting — 2025-02-04 at 10:30AM\n"
+            f"\nHere are the events to format:\n{key_info}"
         )
         try:
             response = openai_client.chat.completions.create(
@@ -117,28 +124,71 @@ class InfoExtractorService:
             raise RuntimeError(f"Key info refinement failed: {e}")
         
     def generate_ics(self, refined: str) -> str:
-        ics_lines = ["BEGIN:VCALENDAR", "VERSION:2.0"]
+        ics_lines = [
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "PRODID:-//SociaMate//Calendar Events//EN",
+            "CALSCALE:GREGORIAN",
+            "METHOD:PUBLISH"
+        ]
+        
+        event_count = 0
         for line in refined.splitlines():
+            # Match the exact format from refine_key_info_with_gpt
             m = re.match(
-                r"-\s*(.+)\s+—\s+(\d{4}-\d{2}-\d{2})\s+at\s+(\d{1,2}:\d{2})(AM|PM)",
-                line
+                r"^-\s*(.+?)\s*—\s*(\d{4}-\d{2}-\d{2})\s+at\s+(\d{1,2}:\d{2})(AM|PM)$",
+                line.strip()
             )
             if not m:
+                logger.warning(f"Could not parse event line: {line}")
                 continue
+                
             desc, date, time_part, ampm = m.groups()
-            dt = parse_date(f"{date} {time_part}{ampm}")
-            stamp = dt.strftime("%Y%m%dT%H%M%S")
-            ics_lines += [
-                "BEGIN:VEVENT",
-                f"SUMMARY:{desc}",
-                f"DTSTART:{stamp}",
-                f"DTEND:{stamp}",
-                "END:VEVENT"
-            ]
+            try:
+                dt = parse_date(f"{date} {time_part}{ampm}")
+                if not dt:
+                    logger.warning(f"Could not parse date/time: {date} {time_part}{ampm}")
+                    continue
+                    
+                # Convert to UTC
+                dt = dt.astimezone(datetime.now().astimezone().tzinfo)
+                # Add 1 hour for the event duration
+                end_dt = dt + timedelta(hours=1)
+                
+                # Format timestamps in UTC
+                start_stamp = dt.strftime("%Y%m%dT%H%M%SZ")
+                end_stamp = end_dt.strftime("%Y%m%dT%H%M%SZ")
+                created_stamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+                
+                ics_lines += [
+                    "BEGIN:VEVENT",
+                    f"DTSTAMP:{created_stamp}",
+                    f"DTSTART:{start_stamp}",
+                    f"DTEND:{end_stamp}",
+                    f"SUMMARY:{desc}",
+                    "SEQUENCE:0",
+                    "STATUS:CONFIRMED",
+                    "TRANSP:OPAQUE",
+                    "END:VEVENT"
+                ]
+                event_count += 1
+                logger.info(f"Successfully added event: {desc} at {dt}")
+            except Exception as e:
+                logger.error(f"Error processing event: {e}")
+                continue
+
+        if event_count == 0:
+            logger.warning("No valid events found to generate ICS file")
+            return ""
 
         ics_lines.append("END:VCALENDAR")
         content = "\n".join(ics_lines)
+        
+        # Create file in the ICS directory
         filename = f"events_{int(time.time())}.ics"
-        with open(filename, "w") as f:
+        filepath = os.path.join(ICS_DIR, filename)
+        
+        with open(filepath, "w") as f:
             f.write(content)
+            
         return filename

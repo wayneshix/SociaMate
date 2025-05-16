@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Request, Depends, HTTPException, Query
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import Dict, Any, List, Optional
 import uuid
 import logging
 import time
+import os
 from datetime import datetime
 from pydantic import BaseModel, Field
 from app.infoextractor import InfoExtractorService
@@ -196,6 +198,19 @@ async def draft_response(request: DraftResponseRequest):
         "processing_time": processing_time
     }
 
+@router.get("/ics/{filename}")
+async def get_ics_file(filename: str):
+    """Serve ICS calendar files."""
+    file_path = os.path.join(os.getcwd(), "ics_files", filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="ICS file not found")
+    return FileResponse(
+        file_path,
+        media_type="text/calendar",
+        filename=filename,
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
 @router.post("/conversations/{conversation_id}/keyinfo")
 async def get_key_info(
     conversation_id: str,
@@ -224,9 +239,11 @@ async def get_key_info(
             return {"key_info": "No events or important dates found in the conversation.", "ics_file": ""}
         
         # Generate ICS file
-        ics = extractor.generate_ics(refined)
+        ics_filename = extractor.generate_ics(refined)
+        if not ics_filename:
+            return {"key_info": refined, "ics_file": ""}
 
-        return {"key_info": refined, "ics_file": ics}
+        return {"key_info": refined, "ics_file": f"/ics/{ics_filename}"}
     except Exception as e:
         logger.error(f"Error getting key info: {e}")
         raise HTTPException(500, f"Failed to get key info: {str(e)}")

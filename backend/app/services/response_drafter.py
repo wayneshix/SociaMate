@@ -57,8 +57,9 @@ class ResponseDrafterService:
 
         if user_input:
             system_prompt += (
-                f"\nThe user has provided this input: '{user_input}'\n"
-                f"Use this as a base for your response, incorporating it naturally into the conversation context.\n"
+                f"\nThe user has suggested this input: '{user_input}'\n"
+                f"Use this as a starting point or inspiration for your response, but feel free to modify it to better fit the conversation context.\n"
+                f"Your response should be a natural continuation of the conversation, incorporating the user's suggestion if appropriate.\n"
             )
 
         if prefer_something:

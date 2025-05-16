@@ -81,7 +81,7 @@ export function Console({
           />
           {icsFile && (
             <a
-              href={`/${icsFile}`}
+              href={`http://localhost:8000${icsFile}`}
               download
               className="mt-2 inline-block text-blue-600 underline"
             >
