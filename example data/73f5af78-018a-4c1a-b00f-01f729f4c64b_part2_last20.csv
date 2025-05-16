@@ -1,0 +1,96 @@
+channel_id,Date,user_id,user_name,content
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-03-17,20:33:21",hritabanghosh,hritabanghosh,"Hi <@931117841829232681>, it is quite interesting and yup I agree that they indeed are kind of opposing each other at first glance. There are however subtle differences in the approaches. 
+
+In Lecture-1 we talk about self-reflection and self-correction, wherein the oracle feedback is given to the intermediate output of the LLM, so that the LLM can refine its output to correct for any mistakes. The author makes an analogy to how humans also make trivial mistakes in their CoT. Furthermore, there is no finetuning of the LLM based on this feedback. For example, look at slide 61. This approach is simply an iterative post training approach where feedback is used to correct for mistakes in the LLM's CoT. The author emphasizes, that external oracle feedback far outperforms feedback given by another LLM, which makes sense since neither LLM were finetuned to provide good rewards. 
+
+But in Lecture 2, the author poses the approach as a new training paradigm where the LLM is trained in such a way so that its instruction following and reward modelling capability improves with training, look at slide 52. In this case, the feedback is integrated in the training loop, and thus can be expected to be better. Small difference however is that here, the reward is on the model's CoT plus final answer as a whole and not something which is intermediate and sent as feedback.
+
+Hope this helps."
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-03-19,02:08:07",alexkim0889,alexkim0889,"Thank for the response <@1335446795765022794>! Yep, this helps"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-03-31,22:07:15",kaiquanmah,kaiquanmah,"In week 5 Coding Agents, the slide after ""Design Space for Agents"" was talking about an ""LLM agents cookbook"". Just curious, is this referring to LLAMA3's cookbook? https://docs.llamaindex.ai/en/stable/examples/cookbooks/llama3_cookbook/"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-14,12:32:43",ppujari,ppujari,<@854134294870884363> Do we have a lecture today? I did not get usual email yet.
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-14,14:02:12",tarande57,tarande57,yes we do! hopefully you've gotten the email by now. it was sent a little late today 😅
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-14,17:22:35",ppujari,ppujari,It appears that the last two or three lectures have deviated somewhat from the topic of agentic LLMs. These are purely ttheory.
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-14,17:54:04",leo_labmer,leo_labmer,"Not really. But, it has become ""Niche LLM Agents""... for Math & CS Theory folks 😅"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-14,17:56:53",ppujari,ppujari,"Yes, correct. I am an NLP researcher, mostly working on text and image."
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-15,09:43:08",tilman_91445,tilman_91445,"well, the course is called ""**Advanced** Large Language Model Agents"", and the description clearly said that ""this course dives deeper into advanced topics in LLM agents, focusing on reasoning, AI for mathematics, code generation, and program verification"" https://llmagents-learning.org/sp25"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-15,10:02:18",tilman_91445,tilman_91445,"Btw for folks who haven't encountered Lean before and want to get a hands-on feel for it without spending too much time, check  https://adam.math.hhu.de/ (e.g prove that 2+2 = 4 in the ""Natural Number Game"", it's fun)"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-15,10:03:26",mmsaki,mmsaki,I've tried the natural number game it's really makes learning lean and learning the lemmas a bit fun
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-15,18:37:08",wei3398,wei3398,"Added to this, I do think this is along the line of having verifiable outputs and provide better approach to improve reasoning (logical thinking), tho."
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-16,12:13:32",mmsaki,mmsaki,"I'm new to Lean. Question for the researchers working on Lean auto-formalizer: Is it possible to use the auto-formalizer to create informal proofs given an input of computer code that has business logic from a programming language eg. python, solidity, and create a general statement / logic? Example use case into formal verification of programs by of proof generation using AI"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-21,11:57:41",tilman_91445,tilman_91445,Today's speaker on Bluesky https://bsky.app/profile/swarat.bsky.social (doesn't seem to be active on Twitter/X)
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-27,07:41:29",arunesh7503,arunesh7503,"Hi Everyone, Please join us on Sunday Apr 27 at 7:30 PT (UTC-8) for a discussion on Coding Agents (Lecture 5 related).
+
+Given the emergence of coding agentic applications like Cursor, Windsurf, etc we will revisit Lecture 5 from this semester's Advanced Course.
+Please join our study group here to learn more: https://discord.gg/KBtf48DC
+
+Also, we encourage folks to present ongoing updates on their AgentX project as well, just to get feedback or encouragement."
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-30,18:48:18",myopenledger_99324,myopenledger_99324,Is this late to join this course?
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-04-30,21:17:16",tarande57,tarande57,nope! make sure to [signup](https://forms.gle/9u6HdVCWXgws16go9). Everything you need is on the [course website](https://llmagents-learning.org/sp25) !
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-01,11:18:02",myopenledger_99324,myopenledger_99324,But I see that above course is complete last week itself.
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-01,12:14:09",tarande57,tarande57,"assignments are all due end of May if you are looking to catch up. But you are right, there are no more lectures. You can still watch the recordings linked on the course website"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-01,12:52:33",myopenledger_99324,myopenledger_99324,Make sense. Are these lectures must to participate in this hackhaton or just just an isolated cource to bings upto the speed of llm?
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-01,14:06:30",tarande57,tarande57,You don't need to participate in the MOOC to participate in AgentX
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-01,14:37:48",myopenledger_99324,myopenledger_99324,Thank you
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-02,00:04:31",jamildoit,jamildoit,"This was referenced in Dawn Song's lecture, but the keynote is not available at https://iclr.cc/virtual/2025/invited-talk/36783.
+Is there a way to view it? I'd like to learn more about her research she was discussing at the end of the lecture.
+Thanks!"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-03,09:31:33",arunesh7503,arunesh7503,"Hi Everyone, Please join us today (Saturday) May 3 at 7:30 PT (UTC-8) for a discussion on Lecture 6: Multimodal Autonomous AI Agents.
+
+We shall also discuss couple of AgentX projects including MCPx: Extensions to the MCP protocol. Please join to present updates on your AgentX project as well.
+
+Please join our study group to learn more: https://discord.gg/gxTymcVB"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-04,08:49:17",jpb8028,jpb8028,What would be the best way to finetune a LM so that it obeys rules with a great amount of determinism? would the RL methods seen in the course be enough? thanks
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-04,10:22:47",tilman_91445,tilman_91445,"yeah, <@854134294870884363> said she would check about access to the keynote https://discord.com/channels/1280234300012494859/1282785079919251577/1366581016554242079"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-05,05:43:18",staphbam,staphbam,"Hi, we have a meeting today in a bit more than 1 hour (at 4 PM Spain time):
+
+Title: Multi-Hypothesis Prediction for Portfolio Optimization. A Structured Ensemble Learning Approach to Risk Diversification
+
+Speaker: Alejandro Rodriguez Dominguez (Miralta Bank)
+
+We will use Jitsi Meet (Open-source alternative to Zoom), here's the link to meeting:
+
+https://meet.jit.si/financereinforcementlearningmeeting
+
+
+
+See you,
+
+Mostapha 
+
+Join our Discord group: https://discord.gg/ekrySuRBf4"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-06,09:47:36",ppujari,ppujari,"Any one knows how LLMs remember conditional statements and amazingly produce good results. It does use formal methods. As en example:
+In order to vote a) one should be 18 years old b) should be a citizen c) should have voter id .... etc. Thinking how to represent this for a long time at least from this course started."
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-06,23:33:12",farah_abdou,farah_abdou,"from my understanding, LLMs execute conditional statements through statistical pattern recognition, rather than formal logic.
+By training, the model sees millions of examples of conditional statements and their implications in natural language. It learns to link patterns: ""If X, then Y"" happens frequently enough that the model represents these relationships in its parameters.
+In your voting example, the model has seen a lot of text about voting requirements. When it reads ""To be able to vote."" it generates possibilities like age requirements, citizenship, and ID requirements based on common patterns in its training data. But in rule-based systems, LLMs do not explicitly record variables or execute IF-THEN rules. Rather, they employ neural attention to weight all parts of your prompt and foresee the text that should follow. This statistical approach is an approximation of logical reasoning, though not formalizing it.
+so I have to say that the model doesn't ""remember"" rules in the way that a computer program does but it generates them from patterns it learned. This is why LLMs can do complex conditional reasoning on any subject matter without being programmed for each use, I hope that help! :))"
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-08,03:22:11",alihamas.,alihamas.,i want ai engineer comeplet coure which one course is best
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-08,11:22:09",tarande57,tarande57,I'd recommend starting with our [Fall 2024 LLM Agents MOOC](https://llmagents-learning.org/f24)
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-09,21:27:23",alihamas.,alihamas.,ok thanks
+73f5af78-018a-4c1a-b00f-01f729f4c64b,"2025-05-10,08:59:48",alihamas.,alihamas.,i want lern ai which course best for learning ai?
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-04-28,11:10:47",tarande57,tarande57,"**Lecture 12 w/ Dawn Song TODAY at 4pm PDT**
+
+@everyone Our final lecture will be happening today at 4pm PDT! You can find the livestream here: https://www.youtube.com/live/ti6yPE2VPZc. 
+
+Today, our head instructor Dawn Song will be presenting “Towards building safe and secure agentic AI”.
+
+Dawn Song is a Professor in Computer Science  at UC Berkeley and  co-Director of Berkeley Center on Responsible Decentralized Intelligence. Her research interest lies in AI, AI safety & security, and decentralization. She is the recipient of numerous awards including the MacArthur Fellowship, Guggenheim Fellowship, and more than 10 Test-of-Time Awards and Best Paper Awards. She is an ACM Fellow and  IEEE Fellow. She is ranked the most cited scholar in computer security (AMiner Award). She is also a serial entrepreneur, named on the Female Founder 100 List by Inc. and Wired25 List of Innovators. 
+
+As a reminder, all of the coursework for the MOOC (due at the end of May) is on the [MOOC website](https://llmagents-learning.org/sp25), except for the labs which we are hoping to release this week! Please ask any questions in <#1280370030609170494> ."
+43c468a8-3aab-4f9a-8c29-16a1788b33f8,"2025-05-11,14:01:33",tarande57,tarande57,"**Reminder: MOOC Coursework due May 31st 11:59pm PDT!**
+
+Thank you @everyone for joining us for our Advanced LLM Agents MOOC! We hope you've enjoyed the lectures from our amazing guest speakers! Here is another reminder about all of the [coursework and certificate requirements](https://docs.google.com/document/d/1t4HS15dySldeElgDbtKmM3piInllq_auHtpO-SRScjo/edit?usp=sharing) for the MOOC. *All of these details are also available on the bottom of the [MOOC website](https://llmagents-learning.org/sp25).*
+
+**Earn Your Certificate in 3 Steps**
+
+__STEP 1.__ Complete all of the coursework for your desired tier by May 31st at 11:59pm PDT.
+               • All assignments should send a Google Forms confirmation email on successful submission.
+               • We track your progress throughout the course via your email. Please use the same email address when submitting all coursework.
+               • You can only earn one certificate from this course.
+
+__STEP 2.__ Complete the [Certificate Declaration Form](https://forms.gle/iPA2MUpHdtrBE1vu5) by May 31st at 11:59pm PDT.
+
+__STEP 3.__ Certificates will be sent to your email in June!
+
+Please ask any questions in <#1280370030609170494> ."

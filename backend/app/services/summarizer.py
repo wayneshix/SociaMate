@@ -11,6 +11,7 @@ from typing import Optional
 from openai import OpenAIError, OpenAI
 from sqlalchemy.orm import Session
 from app.models.summary import Summary
+from app.repositories.message_repository import message_repository
 from app.models.chunk import MessageChunk
 from app.services.context import context_service
 from app.services.tokenizer import tokenizer
@@ -86,6 +87,8 @@ class SummarizerService:
             logger.exception("Unexpected error during summarization")
             raise RuntimeError(f"Summarization failed due to exception: {str(e)}")
 
+
+
     def get_or_create_summary(
         self,
         db: Session,
@@ -95,38 +98,47 @@ class SummarizerService:
         force_refresh: bool = False
     ) -> str:
         start_time = time.time()
+        cache_key = f"conversation:{conversation_id}:summary"
+        if query:
+            cache_key += f":{query}"
 
-        # Auto-generate a "query" from recent messages if not explicitly provided
-        if not query:
-            recent_messages = message_repository.get_messages(db, conversation_id, skip=0, limit=3)
-            joined_recent = "\n".join([f"{m.author}: {m.content}" for m in recent_messages])
-            query = joined_recent[-300:]  # use last ~300 chars of message context as implicit query
-
-        cache_key = f"conversation:{conversation_id}:summary:{query}"
-
-        # Use cached summary if available and not forcing refresh
         if use_cache and not force_refresh:
             cached_summary = cache.get(cache_key)
             if cached_summary:
-                logger.info(f"Using cached summary for conversation {conversation_id} (query-based)")
+                logger.info(f"Using cached summary for conversation {conversation_id}")
                 return cached_summary
 
-        # Try to get context using RAG with query
-        context = context_service.get_context(db, conversation_id, query_text=query)
+        if not query and not force_refresh:
+            existing_summary = (
+                db.query(Summary)
+                .filter(Summary.conversation_id == conversation_id)
+                .order_by(Summary.timestamp.desc())
+                .first()
+            )
+            if existing_summary:
+                logger.info(f"Using existing summary for conversation {conversation_id}")
+                if use_cache:
+                    cache.set(cache_key, existing_summary.content, ttl=self.cache_ttl)
+                return existing_summary.content
+
+        # 💡 Add: auto semantic query based on recent messages
+        if not query:
+            recent_messages = message_repository.get_messages(db, conversation_id, skip=0, limit=3)
+            query = " ".join([msg.content for msg in recent_messages]).strip()
+            logger.info(f"Auto-generated semantic query for RAG: '{query}'")
+
+        context = context_service.get_context(db, conversation_id, query)
         if not context:
             logger.warning(f"No semantic context available for conversation {conversation_id}, falling back")
-            context = context_service.get_context(db, conversation_id)
+            context = context_service.get_context(db, conversation_id, query_text=None)
+            if not context:
+                logger.warning(f"No context available for conversation {conversation_id}")
+                return "No conversation data available to summarize."
 
-        if not context:
-            logger.warning(f"No context available for conversation {conversation_id}")
-            return "No conversation data available to summarize."
-
-        # Generate summary using OpenAI
         summary_text = self.summarize_conversation(context, query)
         token_count = tokenizer.count_tokens(summary_text)
 
-        # Persist to database only for full (non-query-based) summaries
-        if not force_refresh and not query:
+        if not query:
             chunks = (
                 db.query(MessageChunk)
                 .filter(MessageChunk.conversation_id == conversation_id)
