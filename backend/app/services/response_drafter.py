@@ -29,70 +29,63 @@ class ResponseDrafterService:
         user_input: Optional[str] = None,
         prefer_something: bool = False
     ) -> str:
-        start_time = time.time()
+        """Generate a draft response based on the conversation context and user input."""
+        if not user_input:
+            return ""
 
-        # Speaker stats for context
+        # Get speaker stats for context
         speakers = re.findall(r"^(.+?):", conversation_text, re.MULTILINE)
         speaker_counts = Counter(speakers)
         num_users = len(speaker_counts)
         top_users = ", ".join([f"{user} ({count} msgs)" for user, count in speaker_counts.most_common(5)])
 
-        # System prompt
         system_prompt = (
-            f"You are a professional assistant that drafts helpful responses.\n"
-            f"There are {num_users} participants, mainly {top_users}.\n"
+            f"You are an expert at paraphrasing messages while maintaining a specific user's writing style.\n"
+            f"There are {num_users} participants in the conversation, mainly {top_users}.\n"
         )
-        
+
         if as_user:
             system_prompt += (
-                f"The user wants you to draft a response AS IF YOU WERE {as_user}.\n"
-                f"Mimic {as_user}'s writing style and write concisely while creating a response.\n"
-                f"Make sure your response sounds natural and consistent with how {as_user} would respond in the chat history.\n"
-                f"Please try your best to not sound like AI and response should normally be very short, and do not directly mention users name and sound casual like how you would normally talk in a discord server\n"
+                f"Your task is to rephrase the user's input message AS IF IT WAS WRITTEN BY {as_user}.\n"
+                f"Carefully analyze {as_user}'s writing style from the conversation history and mimic it exactly.\n"
+                f"While maintaining {as_user}'s style, ensure you:\n"
+                "1. Keep the same meaning and intent as the original message\n"
+                "2. Use {as_user}'s typical phrases, emojis, and writing patterns\n"
+                "3. Match {as_user}'s level of formality and tone\n"
+                "4. Preserve any specific details or requests from the original message\n"
+                "5. Not add any new information or responses\n"
+                "\n"
+                "The message to rephrase in {as_user}'s style is:\n"
+                f"{user_input}"
             )
         else:
             system_prompt += (
-                f"The user needs you to draft a response to this conversation.\n"
+                "Your task is to rephrase the user's input message in a natural, conversational tone.\n"
+                "While maintaining the original meaning, ensure you:\n"
+                "1. Keep the same meaning and intent\n"
+                "2. Make it sound natural and conversational\n"
+                "3. Preserve any specific details or requests\n"
+                "4. Not add any new information or responses\n"
+                "\n"
+                "The message to rephrase is:\n"
+                f"{user_input}"
             )
-
-        if user_input:
-            system_prompt += (
-                f"\nThe user has suggested this input: '{user_input}'\n"
-                f"Use this as a starting point or inspiration for your response, but feel free to modify it to better fit the conversation context.\n"
-                f"Your response should be a natural continuation of the conversation, incorporating the user's suggestion if appropriate.\n"
-            )
-
-        if prefer_something:
-            system_prompt += (
-                f"\nThe user wants an alternative response. Please provide a different perspective or approach while maintaining the same tone and style.\n"
-            )
-        
-        system_prompt += (
-            f"Focus on the key points from the conversation and create a thoughtful, concise response that directly addresses the main topics discussed.\n"
-        )
 
         try:
-            messages = [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": conversation_text[:6000]}
-            ]
-
+            start_time = time.time()
             response = openai_client.chat.completions.create(
-                model="gpt-4.1",
-                messages=messages,
-                temperature=0.3
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": conversation_text[:6000]}
+                ],
+                temperature=0.7
             )
-
-            draft = response.choices[0].message.content.strip()
             logger.info(f"OpenAI call took {time.time() - start_time:.2f}s")
-            return draft
-
+            return response.choices[0].message.content.strip()
         except OpenAIError as e:
-            logger.exception("OpenAI API error")
-            raise RuntimeError(f"Response drafting failed due to OpenAI error: {str(e)}")
-        except Exception as e:
-            logger.exception("Unexpected error during response drafting")
-            raise RuntimeError(f"Response drafting failed due to exception: {str(e)}")
+            logger.exception("OpenAI error drafting response")
+            raise RuntimeError(f"Response drafting failed: {e}")
 
 
 # Global response drafter instance
