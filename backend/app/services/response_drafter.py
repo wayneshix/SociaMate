@@ -63,7 +63,7 @@ class ResponseDrafterService:
                 "Your task is to rephrase the user's input message in a natural, conversational tone.\n"
                 "While maintaining the original meaning, ensure you:\n"
                 "1. Keep the same meaning and intent\n"
-                "2. Make it sound natural and conversational\n"
+                "2. Expand the message make it polite. immprove grammar and logic, make tone conversational and natural\n"
                 "3. Preserve any specific details or requests\n"
                 "4. Not add any new information or responses\n"
                 "\n"
