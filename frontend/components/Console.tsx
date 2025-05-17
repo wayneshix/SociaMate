@@ -2,7 +2,27 @@
 
 import Papa from "papaparse";
 
-export function Console({ text, summary }: { text: string; summary: string }) {
+interface ConsoleProps {
+  text: string;
+  summary: string;
+  draftResponse: string;
+  keyInfo: string;
+  icsFile: string;
+  userInput: string;
+  onUserInputChange: (value: string) => void;
+  onPreferSomething: () => void;
+}
+
+export function Console({ 
+  text, 
+  summary, 
+  draftResponse, 
+  keyInfo, 
+  icsFile,
+  userInput,
+  onUserInputChange,
+  onPreferSomething
+}: ConsoleProps) {
   let parsedData: string[][] = [];
 
   if (text.trim().startsWith("{") || text.trim().startsWith("[")) {
@@ -51,10 +71,55 @@ export function Console({ text, summary }: { text: string; summary: string }) {
           <textarea value={text} readOnly className="w-full h-40 border p-2 mt-2" />
         )}
       </div>
+      {keyInfo && (
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Key Information</h2>
+          <textarea
+            value={keyInfo}
+            readOnly
+            className="w-full h-40 border p-2 mt-2"
+          />
+          {icsFile && (
+            <a
+              href={`http://localhost:8000${icsFile}`}
+              download
+              className="mt-2 inline-block text-blue-600 underline"
+            >
+              Download .ics
+            </a>
+          )}
+        </div>
+      )}
 
       <div>
         <h2 className="text-xl font-semibold mb-2">Summary</h2>
         <textarea value={summary} readOnly className="w-full h-40 border p-2 mt-2" />
+      </div>
+
+      <div>
+        <h2 className="text-xl font-semibold mb-2">Draft Response</h2>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              placeholder="Enter your message or question..."
+              className="flex-1 p-2 border rounded"
+              value={userInput}
+              onChange={(e) => onUserInputChange(e.target.value)}
+            />
+            <button
+              onClick={onPreferSomething}
+              className="p-2 bg-green-500 text-white rounded disabled:opacity-50 hover:bg-green-600 transition-colors cursor-pointer"
+            >
+              Draft Response
+            </button>
+          </div>
+          <textarea 
+            value={draftResponse} 
+            readOnly 
+            className="w-full h-40 border p-2" 
+          />
+        </div>
       </div>
     </div>
   );

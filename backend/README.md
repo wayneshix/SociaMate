@@ -25,11 +25,11 @@ pip install -r requirements.txt
 
 3. Create a `.env` file:
 ```
-# Hugging Face API Token
-HF_TOKEN=your_huggingface_token_here
+# OPEN AI API Token
+OPENAI_API_KEY = XXX
 
 # Database Connection
-DATABASE_URL=postgresql://postgres:postgres@localhost/sociamate
+DATABASE_URL=postgresql://newdevuser@localhost:5432/sociamate
 
 # Redis Cache (optional)
 REDIS_HOST=localhost

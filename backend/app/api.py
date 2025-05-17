@@ -1,23 +1,27 @@
 from fastapi import APIRouter, Request, Depends, HTTPException, Query
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import Dict, Any, List, Optional
 import uuid
 import logging
 import time
+import os
 from datetime import datetime
 from pydantic import BaseModel, Field
-
+from app.infoextractor import InfoExtractorService
 from app.database import get_db
 from app.services.summarizer import summarizer_service
 from app.repositories.message_repository import message_repository
 from app.services.context import context_service
+from app.services.response_drafter import response_drafter_service
 
 router = APIRouter()
-
+extractor = InfoExtractorService()
 logger = logging.getLogger(__name__)
 
 class TextRequest(BaseModel):
     text: str
+    as_user: Optional[str] = None
 
 class MessageRequest(BaseModel):
     author: str
@@ -37,6 +41,12 @@ class ContextResponse(BaseModel):
 class SummaryResponse(BaseModel):
     summary: str
     processing_time: float
+
+class DraftResponseRequest(BaseModel):
+    text: str
+    as_user: Optional[str] = None
+    user_input: Optional[str] = None
+    prefer_something: bool = False
 
 @router.post("/summarize")
 async def summarize(request: Request):
@@ -167,3 +177,73 @@ async def get_conversation_summary(
         "summary": summary,
         "processing_time": processing_time
     }
+
+@router.post("/draft_response")
+async def draft_response(request: DraftResponseRequest):
+    """Legacy endpoint for drafting responses directly."""
+    if not request.text:
+        return {"error": "No text provided."}
+
+    start_time = time.time()
+    draft = response_drafter_service.draft_response(
+        request.text, 
+        request.as_user,
+        request.user_input,
+        request.prefer_something
+    )
+    processing_time = time.time() - start_time
+    
+    return {
+        "draft": draft,
+        "processing_time": processing_time
+    }
+
+@router.get("/ics/{filename}")
+async def get_ics_file(filename: str):
+    """Serve ICS calendar files."""
+    file_path = os.path.join(os.getcwd(), "ics_files", filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="ICS file not found")
+    return FileResponse(
+        file_path,
+        media_type="text/calendar",
+        filename=filename,
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@router.post("/conversations/{conversation_id}/keyinfo")
+async def get_key_info(
+    conversation_id: str,
+    db: Session = Depends(get_db)
+):
+    try:
+        # Get messages directly from the database if context service fails
+        messages = message_repository.get_messages(db, conversation_id)
+        if not messages:
+            raise HTTPException(404, "Conversation not found")
+            
+        # Convert messages to text format
+        conversation_text = "\n\n".join([
+            f"{msg.author}: {msg.content}"
+            for msg in messages
+        ])
+        
+        # Extract key info
+        raw = extractor.extract_key_info(conversation_text)
+        if not raw:
+            return {"key_info": "No events or important dates found in the conversation.", "ics_file": ""}
+            
+        # Refine with GPT
+        refined = extractor.refine_key_info_with_gpt(conversation_text, raw)
+        if not refined or refined.strip() == "":
+            return {"key_info": "No events or important dates found in the conversation.", "ics_file": ""}
+        
+        # Generate ICS file
+        ics_filename = extractor.generate_ics(refined)
+        if not ics_filename:
+            return {"key_info": refined, "ics_file": ""}
+
+        return {"key_info": refined, "ics_file": f"/ics/{ics_filename}"}
+    except Exception as e:
+        logger.error(f"Error getting key info: {e}")
+        raise HTTPException(500, f"Failed to get key info: {str(e)}")
